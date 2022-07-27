@@ -1,3 +1,8 @@
-# Stigmer_2017_article
+# Stigmergic cooperation through digital traces in human groups
 
+Thomas Bassanetti, Ramón Escobedo, Stéphane Cezera, Adrien Blanchet, Clément Sire, and Guy Theraulaz
+
+*Stigmergy is a generic coordination mechanism widely used by animal societies, in which the traces left by individuals in a medium guide and stimulate their subsequent actions. In humans, the digitization of society has led to the creation of new forms of stigmergic processes and to the massive development of collaborative applications based on digital traces through which users exchange information. However, there is a lack of understanding of the precise impact of stigmergic interactions on individual and collective decisions. Here, we report experiments in which groups of individuals can use digital traces and a simple rating system in an information search task. Stigmergic interactions between individuals are recorded thanks to an interactive web application. We measure and model the impact of digital traces at individual and collective scales in two different conditions: competitive and non-competitive. We find that stigmergic interactions can help groups of individuals to collectively find the cells with the highest values in a table of hidden numbers. We show that individuals can be classified into three behavioral profiles that differ in the way they deliver information to the group members through their ratings and hence in their level of cooperation. The competitive condition reinforces the weight of private information compared to the information contained in the digital trace in individuals' decisions. We then use our data to build and calibrate a model that quantitatively reproduces the experimental dynamics of collective exploration and ratings, as well as the individual and collective performances observed in both conditions.*
+
+Github DOI:
 [![DOI](https://zenodo.org/badge/518357135.svg)](https://zenodo.org/badge/latestdoi/518357135)
