@@ -1,34 +1,28 @@
 import numpy as np
 
-from modules.game import get_filenames
+from modules.files import get_filenames
 from modules.player import get_players_of_a_game
 
 
 def main(path_data, path_data_figures, rule, bootstrap_reps):
 
-    map_type = "R"
-    u1_def_neu, u1_neu_col = np.genfromtxt(path_data_figures + "exp/other/delimitations_players_type.txt")
+    u1_def_neu, u1_neu_col = np.genfromtxt(path_data_figures + "exp/classification/thresholds.txt")
 
-    file_names = get_filenames(path_data, map_type=map_type, rule=rule)
+    file_names = get_filenames(path_data, map_type="R", rule=rule)
     players = [[player for player in get_players_of_a_game(path_data, file_name)] for file_name in file_names]
     for players_game in players:
         for player in players_game:
             player.classify_player(u1_def_neu, u1_neu_col)
 
-    mean_col, err_col, mean_neu, err_neu, mean_def, err_def = bootstrap(players, bootstrap_reps)
+    observables = bootstrap(players, bootstrap_reps)
+    for name, (mean, err) in observables.items():
+        np.savetxt(
+            path_data_figures + f"exp/classification/rule_{rule}/{name}.txt",
+            np.column_stack((mean, err.T)),
+        )
 
-    np.savetxt(
-        path_data_figures + f"exp/other/rule_{rule}/rk_col.txt",
-        np.column_stack((mean_col, err_col.T)),
-    )
-    np.savetxt(
-        path_data_figures + f"exp/other/rule_{rule}/rk_neu.txt",
-        np.column_stack((mean_neu, err_neu.T)),
-    )
-    np.savetxt(
-        path_data_figures + f"exp/other/rule_{rule}/rk_def.txt",
-        np.column_stack((mean_def, err_def.T)),
-    )
+    # Statistical value
+    print(f"The first player is a defector : p = {get_p_value(players, bootstrap_reps)}")
 
 
 def bootstrap(players_list, bootstrap_reps):
@@ -56,7 +50,34 @@ def bootstrap(players_list, bootstrap_reps):
     mean_def = np.mean(bs_props_def, axis=0)
     err_def = np.abs(np.percentile(bs_props_def, [50 - 34.13, 50 + 34.13], axis=0) - mean_def)
 
-    return mean_col, err_col, mean_neu, err_neu, mean_def, err_def
+    return {
+        "rk_col": (mean_col, err_col),
+        "rk_neu": (mean_neu, err_neu),
+        "rk_def": (mean_def, err_def),
+    }
+
+
+def get_p_value(players_list, bootstrap_reps):
+
+    p_def_larger_than_p_oth = 0
+
+    for _ in range(bootstrap_reps):
+        bs_indices = np.random.choice(len(players_list), replace=True, size=len(players_list))
+
+        ranks_defector = []
+        ranks_other = []
+        for i in bs_indices:
+            for player in players_list[i]:
+                if player.type == "defector":
+                    ranks_defector.append(player.rank)
+                else:
+                    ranks_other.append(player.rank)
+        p_def = list(ranks_defector).count(1) / len(ranks_defector)
+        p_oth = list(ranks_other).count(1) / len(ranks_other)
+        if p_def > p_oth:
+            p_def_larger_than_p_oth += 1
+
+    return round(1 - p_def_larger_than_p_oth / bootstrap_reps, 4)
 
 
 if __name__ == "__main__":

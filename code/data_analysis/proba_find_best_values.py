@@ -10,8 +10,7 @@ def main(path_data, path_data_figures, rule, values, bootstrap_reps):
     if isinstance(values, int):
         values = [values]
 
-    map_type = "R"
-    file_names = get_filenames(path_data, map_type=map_type, rule=rule)
+    file_names = get_filenames(path_data, map_type="R", rule=rule)
 
     probability_finding_value = []
     for file_name in file_names:
@@ -21,7 +20,7 @@ def main(path_data, path_data_figures, rule, values, bootstrap_reps):
     mean, err = bootstrap(probability_finding_value, bootstrap_reps)
 
     np.savetxt(
-        path_data_figures + f"exp/cell/rule_{rule}/proba_find_{'_'.join([str(value) for value in values])}.txt",
+        path_data_figures + f"exp/observables/rule_{rule}/proba_find_{'_'.join([str(value) for value in values])}.txt",
         np.column_stack(
             (
                 np.arange(1, len(mean) + 1),
@@ -79,7 +78,7 @@ if __name__ == "__main__":
     path_data = "./data/"
     path_data_figures = "./data_figures/"
 
-    bootstrap_reps = 1000
+    bootstrap_reps = 10000
 
     main(path_data, path_data_figures, 1, 99, bootstrap_reps)
     main(path_data, path_data_figures, 1, [86, 85, 84], bootstrap_reps)

@@ -1,22 +1,16 @@
+from collections import defaultdict
+
 import numpy as np
 
-from modules.game import GameSet
+from modules.gameset import GameSet
 
 
 def main(path_data, path_data_figures, rule, bootstrap_reps):
-
-    map_type = "R"
-
-    games = GameSet(path_data, map_type=map_type, rule=rule)
-    games.compute_observables()
-
-    for observable in list(games)[0].observables.keys():
-
-        observable_list = [game.observables[observable] for game in games]
-        mean, err = bootstrap(observable_list, bootstrap_reps)
-
+    games = GameSet(path_data, map_type="R", rule=rule)
+    observables = bootstrap(list(games), bootstrap_reps)
+    for name, (mean, err) in observables.items():
         np.savetxt(
-            path_data_figures + f"exp/cell/rule_{rule}/{observable}.txt",
+            path_data_figures + f"exp/observables/rule_{rule}/{name}.txt",
             np.column_stack(
                 (
                     np.arange(1, len(mean) + 1),
@@ -28,15 +22,22 @@ def main(path_data, path_data_figures, rule, bootstrap_reps):
         )
 
 
-def bootstrap(observable_list, bootstrap_reps):
-    bs_means = []
+def bootstrap(games, bootstrap_reps):
+    bs_observables = defaultdict(list)
     for _ in range(bootstrap_reps):
-        bs_indices = np.random.choice(range(len(observable_list)), replace=True, size=len(observable_list))
-        bs_sample = [observable_list[i] for i in bs_indices]
-        bs_means.append(np.mean(bs_sample, axis=0))
-    mean = np.mean(bs_means, axis=0)
-    err = np.abs(np.percentile(bs_means, [50 - 34.13, 50 + 34.13], axis=0) - mean)
-    return mean, err
+        bs_games = np.random.choice(games, replace=True, size=len(games))
+        for observable in bs_games[0].observables.keys():
+            bs_observables[observable].append(np.mean([game.observables[observable] for game in bs_games], axis=0))
+    return {
+        observable: (
+            np.mean(bs_observables[observable], axis=0),
+            np.abs(
+                np.percentile(bs_observables[observable], [50 - 34.13, 50 + 34.13], axis=0)
+                - np.mean(bs_observables[observable], axis=0)
+            ),
+        )
+        for observable in bs_observables
+    }
 
 
 if __name__ == "__main__":
@@ -44,7 +45,7 @@ if __name__ == "__main__":
     path_data = "./data/"
     path_data_figures = "./data_figures/"
 
-    bootstrap_reps = 1000
+    bootstrap_reps = 10000
 
     main(path_data, path_data_figures, 1, bootstrap_reps)
     main(path_data, path_data_figures, 2, bootstrap_reps)

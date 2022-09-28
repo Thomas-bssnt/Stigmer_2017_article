@@ -7,7 +7,7 @@ def main(path_data, path_data_figures):
 
     file_names = get_filenames(path_data)
 
-    map_visits = np.zeros((3, 15, 15))
+    map_visits = np.zeros((3, 15, 15), dtype=int)
 
     for file_name in file_names:
 
@@ -23,9 +23,9 @@ def main(path_data, path_data_figures):
             for i, (mapX, mapY) in enumerate(visits_round_player):
                 map_visits[i, mapY, mapX] += 1
 
-    np.savetxt(path_data_figures + "exp/other/cell_1.txt", map_visits[0])
-    np.savetxt(path_data_figures + "exp/other/cell_2.txt", map_visits[1])
-    np.savetxt(path_data_figures + "exp/other/cell_3.txt", map_visits[2])
+    np.savetxt(path_data_figures + "exp/visits_1st_round/cell_1.txt", map_visits[0], fmt="%d")
+    np.savetxt(path_data_figures + "exp/visits_1st_round/cell_2.txt", map_visits[1], fmt="%d")
+    np.savetxt(path_data_figures + "exp/visits_1st_round/cell_3.txt", map_visits[2], fmt="%d")
 
 
 if __name__ == "__main__":
@@ -33,5 +33,4 @@ if __name__ == "__main__":
     path_data = "./data/"
     path_data_figures = "./data_figures/"
 
-    main(path_data, path_data_figures)
     main(path_data, path_data_figures)

@@ -8,17 +8,17 @@ def main(path_data_figures):
 
     N_CLUSTER = 3
 
-    popts_1 = np.genfromtxt(path_data_figures + "exp/other/rule_1/players_type.txt")
-    popts_2 = np.genfromtxt(path_data_figures + "exp/other/rule_2/players_type.txt")
+    popts_1 = np.genfromtxt(path_data_figures + "exp/classification/rule_1/players_u0_u1.txt")
+    popts_2 = np.genfromtxt(path_data_figures + "exp/classification/rule_2/players_u0_u1.txt")
     popts = np.concatenate((popts_1, popts_2))
     u1 = popts[:, 1].reshape(-1, 1)
 
     ward = AgglomerativeClustering(n_clusters=N_CLUSTER, linkage="ward").fit(u1)
     limits, N_type_1, N_type_2 = get_limits_and_number(u1, ward.labels_)
 
-    np.savetxt(path_data_figures + "exp/other/delimitations_players_type.txt", limits, fmt="%f")
-    np.savetxt(path_data_figures + "exp/other/rule_1/number_players_type.txt", N_type_1, fmt="%i")
-    np.savetxt(path_data_figures + "exp/other/rule_2/number_players_type.txt", N_type_2, fmt="%i")
+    np.savetxt(path_data_figures + "exp/classification/thresholds.txt", limits, fmt="%f")
+    np.savetxt(path_data_figures + "exp/classification/rule_1/number_players_type.txt", N_type_1, fmt="%i")
+    np.savetxt(path_data_figures + "exp/classification/rule_2/number_players_type.txt", N_type_2, fmt="%i")
 
 
 def get_limits_and_number(u1, labels):

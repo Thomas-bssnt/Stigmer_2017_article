@@ -10,12 +10,11 @@ from modules.player import get_players_of_a_game
 
 def main(path_data, path_data_figures, bootstrap_reps):
 
-    map_type = "R"
-    u1_def_neu, u1_neu_col = np.genfromtxt(path_data_figures + "exp/other/delimitations_players_type.txt")
+    u1_def_neu, u1_neu_col = np.genfromtxt(path_data_figures + "exp/classification/thresholds.txt")
 
     #############################################################################
 
-    file_names = get_filenames(path_data, map_type=map_type, rule=[1, 2])
+    file_names = get_filenames(path_data, map_type="R", rule=[1, 2])
 
     players = [player for file_name in file_names for player in get_players_of_a_game(path_data, file_name)]
     for player in players:
@@ -59,7 +58,7 @@ def main(path_data, path_data_figures, bootstrap_reps):
 
     for i, P in ((0, "P0"), (1, "P1234"), (5, "P5")):
         np.savetxt(
-            path_data_figures + f"exp/star/{P}_col.txt",
+            path_data_figures + f"exp/classification/P{P}_col.txt",
             np.column_stack(
                 (
                     values,
@@ -70,7 +69,7 @@ def main(path_data, path_data_figures, bootstrap_reps):
             fmt=("%d", "%f", "%f", "%f"),
         )
         np.savetxt(
-            path_data_figures + f"exp/star/{P}_neu.txt",
+            path_data_figures + f"exp/classification/P{P}_neu.txt",
             np.column_stack(
                 (
                     values,
@@ -81,7 +80,7 @@ def main(path_data, path_data_figures, bootstrap_reps):
             fmt=("%d", "%f", "%f", "%f"),
         )
         np.savetxt(
-            path_data_figures + f"exp/star/{P}_def.txt",
+            path_data_figures + f"exp/classification/P{P}_def.txt",
             np.column_stack(
                 (
                     values,
@@ -93,17 +92,17 @@ def main(path_data, path_data_figures, bootstrap_reps):
         )
 
         np.savetxt(
-            path_data_figures + f"model/star/{P}_col.txt",
+            path_data_figures + f"model/classification/P{P}_col.txt",
             np.column_stack((values_model, probas_model_col[:, i])),
             fmt=("%d", "%f"),
         )
         np.savetxt(
-            path_data_figures + f"model/star/{P}_neu.txt",
+            path_data_figures + f"model/classification/P{P}_neu.txt",
             np.column_stack((values_model, probas_model_neu[:, i])),
             fmt=("%d", "%f"),
         )
         np.savetxt(
-            path_data_figures + f"model/star/{P}_def.txt",
+            path_data_figures + f"model/classification/P{P}_def.txt",
             np.column_stack((values_model, probas_model_def[:, i])),
             fmt=("%d", "%f"),
         )
@@ -112,7 +111,7 @@ def main(path_data, path_data_figures, bootstrap_reps):
 
     for rule in [1, 2]:
 
-        file_names = get_filenames(path_data, map_type=map_type, rule=rule)
+        file_names = get_filenames(path_data, map_type="R", rule=rule)
 
         players = [player for file_name in file_names for player in get_players_of_a_game(path_data, file_name)]
         for player in players:
@@ -127,7 +126,7 @@ def main(path_data, path_data_figures, bootstrap_reps):
 
         for i, P in ((0, "P0"), (1, "P1234"), (5, "P5")):
             np.savetxt(
-                path_data_figures + f"exp/star/rule_{rule}/{P}_col.txt",
+                path_data_figures + f"exp/classification/rule_{rule}/P{P}_col.txt",
                 np.column_stack(
                     (
                         values,
@@ -138,7 +137,7 @@ def main(path_data, path_data_figures, bootstrap_reps):
                 fmt=("%d", "%f", "%f", "%f"),
             )
             np.savetxt(
-                path_data_figures + f"exp/star/rule_{rule}/{P}_neu.txt",
+                path_data_figures + f"exp/classification/rule_{rule}/P{P}_neu.txt",
                 np.column_stack(
                     (
                         values,
@@ -149,7 +148,7 @@ def main(path_data, path_data_figures, bootstrap_reps):
                 fmt=("%d", "%f", "%f", "%f"),
             )
             np.savetxt(
-                path_data_figures + f"exp/star/rule_{rule}/{P}_def.txt",
+                path_data_figures + f"exp/classification/rule_{rule}/P{P}_def.txt",
                 np.column_stack(
                     (
                         values,
